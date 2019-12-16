@@ -43,5 +43,12 @@ RUN julia -e "using Pkg; Pkg.develop(PackageSpec(path=\"/SpineInterface.jl\"))"
 RUN julia -e "using Pkg; Pkg.develop(PackageSpec(path=\"/Spine-Model\"))"
 RUN julia -e "using Pkg; Pkg.precompile()"
 
+# Clean up
+RUN apt-get remove -y build-essential
+RUN apt-get remove -y wget
+RUN apt-get remove -y git
+RUN apt-get autoremove -y
+RUN apt-get clean -y
+
 # Run Spine Toolbox
 CMD ["spinetoolbox"]
