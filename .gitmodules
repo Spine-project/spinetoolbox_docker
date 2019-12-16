@@ -1,0 +1,18 @@
+[submodule "SpineInterface.jl"]
+	path = SpineInterface.jl
+	url = https://gitlab.vtt.fi/spine/SpineInterface.jl.git
+	branch = dev
+[submodule "engine"]
+	path = engine
+	url = https://gitlab.vtt.fi/spine/engine.git
+[submodule "model"]
+	path = model
+	url = https://gitlab.vtt.fi/spine/model.git
+	branch = dev
+[submodule "data"]
+	path = data
+	url = https://gitlab.vtt.fi/spine/data.git
+[submodule "toolbox"]
+	path = toolbox
+	url = https://gitlab.vtt.fi/spine/toolbox.git
+	branch = dev
