@@ -20,10 +20,8 @@ RUN julia -v
 RUN pip install --upgrade pip
 
 # Install DB API and Engine
-COPY ./data /Spine-Database-API
-RUN pip install /Spine-Database-API
-COPY ./engine /Spine-Engine
-RUN pip install /Spine-Engine
+RUN pip install git+https://github.com/Spine-project/Spine-Database-API.git#egg=spinedb_api
+RUN pip install git+https://github.com/Spine-project/spine-engine.git#egg=spine_engine
 
 # Install Toolbox incl. prerequisities
 RUN apt-get install -y unixodbc-dev
@@ -32,14 +30,11 @@ RUN pip install python-dateutil==2.8.0
 RUN pip install ipykernel
 RUN python -m ipykernel install --name python-$(python -c "import sys; print('{}.{}'.format(sys.version_info.major, sys.version_info.minor))")
 RUN julia -e "using Pkg; Pkg.add(\"IJulia\")"
-COPY ./toolbox /Spine-Toolbox
-RUN pip install /Spine-Toolbox
+RUN pip install git+https://github.com/Spine-project/Spine-Toolbox.git#egg=spinetoolbox
 
 # Install Spine Model
-COPY ./model /Spine-Model
-COPY ./SpineInterface.jl /SpineInterface.jl
-RUN PYTHON=$(which python) julia -e "using Pkg; Pkg.develop(PackageSpec(path=\"/SpineInterface.jl\"))"
-RUN julia -e "using Pkg; Pkg.develop(PackageSpec(path=\"/Spine-Model\"))"
+RUN PYTHON=$(which python) julia -e "using Pkg; Pkg.add(PackageSpec(url=\"https://github.com/Spine-project/SpineInterface.jl.git\"))"
+RUN julia -e "using Pkg; Pkg.add(PackageSpec(url=\"https://github.com/Spine-project/Spine-Model.git\"))"
 RUN julia -e "using Pkg; Pkg.precompile()"
 
 # Clean up
