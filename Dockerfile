@@ -1,7 +1,8 @@
-FROM julia:1.3.0 AS julia
-RUN apt-get update
+# Get julia image
+FROM julia:latest AS julia
 
-FROM bildcode/pyside2:py3.7
+# Get Python 
+FROM bildcode/pyside2:latest
 
 # Update package repository and install some required libraries
 RUN apt-get update
@@ -11,7 +12,6 @@ RUN apt-get install -y git
 
 # Copy Julia
 ARG jl_path=/usr/local/julia
-ARG jl_pkgdir=/root/.julia
 COPY --from=julia ${jl_path} ${jl_path}
 ENV PATH ${jl_path}/bin:$PATH
 RUN julia -v
@@ -26,20 +26,19 @@ COPY ./engine /Spine-Engine
 RUN pip install /Spine-Engine
 
 # Install Toolbox incl. prerequisities
-COPY ./toolbox /Spine-Toolbox
 RUN apt-get install -y unixodbc-dev
 RUN apt-get install -y libpq-dev
 RUN pip install python-dateutil==2.8.0
 RUN pip install ipykernel
-#RUN python -m ipykernel install --user --name python-3.7 --display-name=??
+RUN python -m ipykernel install --name python-$(python -c "import sys; print('{}.{}'.format(sys.version_info.major, sys.version_info.minor))")
 RUN julia -e "using Pkg; Pkg.add(\"IJulia\")"
+COPY ./toolbox /Spine-Toolbox
 RUN pip install /Spine-Toolbox
 
 # Install Spine Model
 COPY ./model /Spine-Model
 COPY ./SpineInterface.jl /SpineInterface.jl
-ENV PYTHON=/usr/local/bin/python
-RUN julia -e "using Pkg; Pkg.develop(PackageSpec(path=\"/SpineInterface.jl\"))"
+RUN PYTHON=$(which python) julia -e "using Pkg; Pkg.develop(PackageSpec(path=\"/SpineInterface.jl\"))"
 RUN julia -e "using Pkg; Pkg.develop(PackageSpec(path=\"/Spine-Model\"))"
 RUN julia -e "using Pkg; Pkg.precompile()"
 
