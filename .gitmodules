@@ -1,7 +1,6 @@
 [submodule "SpineInterface.jl"]
 	path = SpineInterface.jl
 	url = https://gitlab.vtt.fi/spine/SpineInterface.jl.git
-	branch = dev
 [submodule "engine"]
 	path = engine
 	url = https://gitlab.vtt.fi/spine/engine.git
